@@ -52,8 +52,8 @@ The script uses `matplotlib.animation.FuncAnimation` to create an animated plot 
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/yourusername/sofr-swap-curve-bootstrapping.git
-cd sofr-swap-curve-bootstrapping
+git clone https://github.com/yourusername/swap-curve-bootstrapping.git
+cd swap-curve-bootstrapping
 ```
 
 2. Install the required dependencies:
@@ -66,14 +66,22 @@ pip install -r requirements.txt
     - Bootstrap the SOFR swap curve.
     - Calculate zero rates from discount factors.
     - Animate the swap curve over time.
+  
+4. **Plot the Rate Curve**: You can plot the Rate curve for a specific date by calling:
 
-4. **Plot the Swap Curve**: You can plot the swap curve for a specific date by calling:
+```python
+plot_tenor(df, maturities, date='YYYY-MM-DD')
+```
+This will plot the rate curve for different tenors at a given date.
+
+5. **Plot the Swap Curve**: You can plot the swap curve for a specific date by calling:
 
 ```python
 plot_swap_curve(df, maturities, date='YYYY-MM-DD')
 ```
+This will plot the bootstrapped Swap Zero-Rate curve for different tenors at a given date.
 
-5. **Animate the Swap Curve**: To see the animated evolution of the swap curve, run:
+6. **Animate the Swap Curve**: To see the animated evolution of the swap curve, run:
 
 ```python
 ani = FuncAnimation(fig, update, frames=len(df.index), interval=1000, blit=True)
@@ -86,15 +94,28 @@ plt.show()
 # Example usage for plotting the swap curve for a specific date
 plot_swap_curve(df, maturities, date='2023-01-01')
 
-# Example usage for animating the swap curve over time
-ani = FuncAnimation(fig, update, frames=len(df.index), interval=1000, blit=True)
-plt.show()
-```
+# Another example usage for animating the rate curve over time of instruments:
+plot_tenor(fic_data[data.keys()], maturities, '2023-12-29')
 
+
+# Example usage for animating the swap curve over time
+animate_data(df[[f'Z_{maturity}' for maturity in maturities.keys()]], maturities,
+                title='Bootstrapped SOFR Swap Curve', 
+                xlabel='Maturity (Years)', ylabel='Zero Rate', 
+                save=True, 
+                filename='sofr_swap_curve.gif')
+
+# Another example usage for animating the rate curve over time of instruments:
+animate_data(fic_data[data.keys()], maturities, 
+             title='Rates by Tenor used for Bootstrapping', 
+             xlabel='Maturity (Years)', ylabel='Rate', 
+             save=True, 
+             filename='rates_by_tenor.gif')
+```
 ## Customization
 
 - You can adjust the maturities or swap rates in the dataset by modifying the input `DataFrame` (`df`) or passing custom maturities.
-- The animation speed can be adjusted by changing the `interval` in the `FuncAnimation` function.
+- The animation speed can be adjusted by changing the `fps` in the `FuncAnimation` function.
 
 ## License
 
