@@ -112,6 +112,20 @@ animate_data(fic_data[data.keys()], maturities,
              save=True, 
              filename='rates_by_tenor.gif')
 ```
+
+## Results
+
+
+1. Example usage for animating the swap curve over time: 
+   <div align="center">
+       <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjVlc2liMnloemJjeW8ybWVubGZ4bzljMmhwcTR3d2h5cnQzendveCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jaEDINdNHNaU40LxEg/giphy.gif" alt="Swap Curve Animation" />
+   </div>
+
+2. Another example usage for animating the rate curve over time of instruments: 
+   <div align="center">
+       <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzBkaGFtdWliaWc3cXRnYzVhZTJqYXgxenV1enV0cjlveGRjZ3prZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fp9PW2mHv0lBE1xUd1/giphy.gif" alt="Rate Curve Animation" />
+   </div>
+
 ## Customization
 
 - You can adjust the maturities or swap rates in the dataset by modifying the input `DataFrame` (`df`) or passing custom maturities.
