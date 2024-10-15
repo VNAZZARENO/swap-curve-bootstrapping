@@ -67,19 +67,12 @@ pip install -r requirements.txt
     - Calculate zero rates from discount factors.
     - Animate the swap curve over time.
   
-4. **Plot the Rate Curve**: You can plot the Rate curve for a specific date by calling:
+4. **Plot a Curve**: You can plot any curve for a specific date by calling:
 
 ```python
-plot_tenor(df, maturities, date='YYYY-MM-DD')
+plot_curve(df, maturities, date='YYYY-MM-DD')
 ```
-This will plot the rate curve for different tenors at a given date.
-
-5. **Plot the Swap Curve**: You can plot the swap curve for a specific date by calling:
-
-```python
-plot_swap_curve(df, maturities, date='YYYY-MM-DD')
-```
-This will plot the bootstrapped Swap Zero-Rate curve for different tenors at a given date.
+This will plot the a curve for different maturities at a given date.
 
 6. **Animate the Swap Curve**: To see the animated evolution of the swap curve, run:
 
@@ -92,25 +85,41 @@ plt.show()
 
 ```python
 # Example usage for plotting the swap curve for a specific date
-plot_swap_curve(df, maturities, date='2023-01-01')
+plot_curve(bond_yields_df, bond_yields_df.columns.tolist(), '2023-12-29', 'Bootstrapped Swap Curve')
 
-# Another example usage for animating the rate curve over time of instruments:
-plot_tenor(fic_data[data.keys()], maturities, '2023-12-29')
+# Another example usage for ploting the bond price for a specific date.
+plot_curve(bond_prices_df, bond_prices_df.columns.tolist(), '2023-12-29', 'Bond Prices Curve')
 
 
 # Example usage for animating the swap curve over time
-animate_data(df[[f'Z_{maturity}' for maturity in maturities.keys()]], maturities,
-                title='Bootstrapped SOFR Swap Curve', 
-                xlabel='Maturity (Years)', ylabel='Zero Rate', 
-                save=True, 
-                filename='sofr_swap_curve.gif')
+animate_data(bond_yields_df,
+                maturities,
+                'Bootstrapped Swap Curve',
+                'Maturity (Years)',
+                'Zero Rate (%)',
+                save=True,
+                filename='bootstrapped_swap_curve.gif')
 
-# Another example usage for animating the rate curve over time of instruments:
-animate_data(fic_data[data.keys()], maturities, 
-             title='Rates by Tenor used for Bootstrapping', 
-             xlabel='Maturity (Years)', ylabel='Rate', 
-             save=True, 
-             filename='rates_by_tenor.gif')
+
+# Another example usage for animating the bond price over time of instruments:
+animate_data(bond_prices_df,
+                maturities,
+                'Bond Prices Curve',
+                'Maturity (Years)',
+                'Bond Price',
+                save=True,
+                filename='bond_prices_curve.gif')
+
+# Example of two curves on the same animation over time:
+animate_data(bond_yields_df,
+                maturities,
+                'Bootstrapped Swap Curve',
+                'Maturity (Years)',
+                'Zero Rate (%)',
+                save=True,
+                filename='bootstrapped_swap_curve.gif',
+                secondary_data=rate_df,
+                secondary_label='Rates Curve')
 ```
 
 ## Results
@@ -118,12 +127,12 @@ animate_data(fic_data[data.keys()], maturities,
 
 1. Example usage for animating the swap curve over time: 
    <div align="center">
-       <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjVlc2liMnloemJjeW8ybWVubGZ4bzljMmhwcTR3d2h5cnQzendveCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jaEDINdNHNaU40LxEg/giphy.gif" alt="Swap Curve Animation" />
+       <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTBlbTF3ZTZ2MHlhajFocnRvNWNlZXYxN2M4ZGRuMXNweTZmZm9iZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PjTjBN9MLcqCY7XjeR/giphy.gif" alt="Swap Curve Animation" />
    </div>
 
-2. Another example usage for animating the rate curve over time of instruments: 
+2. Another usage for animate two curves on the same animation over time:
    <div align="center">
-       <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzBkaGFtdWliaWc3cXRnYzVhZTJqYXgxenV1enV0cjlveGRjZ3prZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fp9PW2mHv0lBE1xUd1/giphy.gif" alt="Rate Curve Animation" />
+       <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzhreHkzdWJnanZjZmQwMGJ3YW1kYmJ6bzV4ZHZ1cTF0amhwMGc0MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eKZhf0rC7PlflH5yA5/giphy.gif" alt="Swap Curve Animation" />
    </div>
 
 ## Customization
