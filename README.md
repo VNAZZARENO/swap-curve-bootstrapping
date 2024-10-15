@@ -4,8 +4,9 @@ This repository contains a Python script that bootstraps a SOFR (Secured Overnig
 
 ## Features
 
-- **SOFR Swap Curve Bootstrapping**: Computes discount factors and zero rates for a range of maturities (from 1 month to 2 years) using swap rates.
+- **SOFR Swap Curve Bootstrapping**: Computes discount factors and zero rates for a range of maturities (from 1 day to 30 years) using swap rates.
 - **Zero Rate Calculation**: Derives zero-coupon rates from the computed discount factors for each date in the dataset.
+- **Bond Price and Yield Calculation**: Computes bond prices and yields from the discount factors.
 - **Animated Swap Curve**: Animates the bootstrapped SOFR swap curve, showing the change in zero rates over time.
 - **Custom Maturity Handling**: Handles custom maturities for both short-term and long-term SOFR swaps.
 
@@ -24,26 +25,75 @@ pip install numpy pandas matplotlib scipy
 
 ## Files
 
-- `analytical_fianance_2.ipynb`: Jupyter Notebook with all the functions and code required to bootstrap the SOFR swap curve and animate the results.
+- `swap-curve-bootstrapping.ipynb`: Jupyter Notebook with all the functions and code required to bootstrap the SOFR swap curve and animate the results.
 - `README.md`: This file explains the usage and purpose of the project.
 
 ## How It Works
 
 ### 1. SOFR Swap Curve Bootstrapping
 
-The swap curve bootstrapping process involves calculating discount factors for different maturities based on the available SOFR swap rates. For shorter maturities (less than or equal to 1 year), the discount factors are computed directly from the given rates. For longer maturities (more than 1 year), the discount factors are solved using an iterative process (`fsolve` from `scipy`), ensuring that the fixed and floating legs of the swap are balanced.
+The swap curve bootstrapping process involves calculating discount factors for different maturities based on the available SOFR swap rates. For shorter maturities (less than or equal to 1 year), the discount factors are computed directly from the given rates, such as the Federal Funds Rate, SOFR Index, and Treasury Bill rates.
+
+For longer maturities (more than 1 year), discount factors are bootstrapped using an iterative process. At each maturity, the swap rate $S(T_n)$ is used to balance the fixed and floating legs of the swap. The formula to calculate the discount factor $D(T_n)$ for each maturity is as follows:
+
+$$
+D(T_n) = \frac{1 - S(T_n) \sum_{i=1}^{n-1} D(T_i) \Delta t}{1 + S(T_n) \Delta t}
+$$
+
+Where:
+- $D(T_n)$ is the discount factor at time $T_n$,
+- $S(T_n)$ is the swap rate for the maturity $T_n$,
+- $D(T_i)$ are the previously computed discount factors for earlier maturities,
+- $\Delta t$ is the time between fixed payments (usually 1 year for simplicity).
+
+This ensures that the fixed leg (computed using known discount factors) is equal to the floating leg at each maturity.
 
 ### 2. Zero Rate Calculation
 
-Once the discount factors are computed, zero rates (continuously compounded) are derived using the formula:
+Once the discount factors are computed, zero rates (continuously compounded) are derived using the following formula:
 
-$$r(T) = -\frac{\ln(D(T))}{T}$$
+$$
+r(T) = -\frac{\ln(D(T))}{T}
+$$
 
 Where:
 - $r(T)$ is the zero rate for a given maturity $T$,
-- $D(T)$ is the discount factor for that maturity.
+- $D(T)$ is the discount factor for that maturity,
+- $T$ is the time to maturity.
 
-### 3. Animation of the Swap Curve
+This formula converts the discount factor into a continuously compounded zero-coupon rate.
+
+### 3. Bond Prices and Yields Calculation
+
+Using the computed discount factors, bond prices are derived for each maturity. The price of a zero-coupon bond for a given maturity $T$ is simply the inverse of the discount factor:
+
+$$
+\text{Bond Price}(T) = \frac{1}{D(T)}
+$$
+
+Bond yields are then calculated based on the discount factors. The yield to maturity (YTM) for a zero-coupon bond is given by:
+
+$$
+\text{Yield}(T) = \left( \frac{1}{D(T)} - 1 \right) \times \frac{1}{T} \times 100
+$$
+
+Where:
+- $\text{Yield}(T)$ is the yield to maturity for a given bond,
+- $D(T)$ is the discount factor for the maturity $T$,
+- $T$ is the time to maturity.
+
+### 4. Iteration Over Dates
+
+For each date in the dataset, the bootstrapping process is applied, and the results (discount factors, bond prices, and bond yields) are stored in a DataFrame. This allows for the tracking of changes in the SOFR curve and related bond market metrics over time.
+
+The process results in three main outputs for each date:
+1. **Discount Factors** for each maturity.
+2. **Bond Prices** for each zero-coupon bond.
+3. **Bond Yields** for each maturity.
+
+These results are stored in DataFrames for further analysis or visualization.
+
+### 5. Animation of the Swap Curve
 
 The script uses `matplotlib.animation.FuncAnimation` to create an animated plot showing the evolution of the SOFR swap curve over time. For each date in the dataset, the plot is updated with the corresponding zero rates and maturities.
 
@@ -137,7 +187,7 @@ animate_data(bond_yields_df,
 
 ## Customization
 
-- You can adjust the maturities or swap rates in the dataset by modifying the input `DataFrame` (`df`) or passing custom maturities.
+- You can adjust the maturities or swap rates in the dataset by modifying the input `DataFrame` (`df`) and passing custom maturities.
 - The animation speed can be adjusted by changing the `fps` in the `FuncAnimation` function.
 
 ## License
