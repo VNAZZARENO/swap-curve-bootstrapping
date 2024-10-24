@@ -1,14 +1,6 @@
-# SOFR Swap Curve Bootstrapping and Animation
+# SOFR Swap Curve Bootstrapping
 
-This repository contains a Python script that bootstraps a SOFR (Secured Overnight Financing Rate) swap curve, calculates zero rates from discount factors, and animates the curve over time. The swap curve evolves over a specified date range, showing how the SOFR swap curve changes as you move from the past to the present.
-
-## Features
-
-- **SOFR Swap Curve Bootstrapping**: Computes discount factors and zero rates for a range of maturities (from 1 day to 30 years) using swap rates.
-- **Zero Rate Calculation**: Derives zero-coupon rates from the computed discount factors for each date in the dataset.
-- **Bond Price and Yield Calculation**: Computes bond prices and yields from the discount factors.
-- **Animated Swap Curve**: Animates the bootstrapped SOFR swap curve, showing the change in zero rates over time.
-- **Custom Maturity Handling**: Handles custom maturities for both short-term and long-term SOFR swaps.
+This repository contains a Python script that bootstraps a SOFR (Secured Overnight Financing Rate) swap curve, calculates zero rates from discount factors.
 
 ## Requirements
 
